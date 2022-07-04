@@ -1,7 +1,15 @@
 import { ForkOutlined } from "@ant-design/icons";
-import { Button, Input, PageHeader } from "antd";
-import TextArea from "antd/lib/input/TextArea";
+import {
+  Button,
+  Input,
+  InputRef,
+  PageHeader,
+  message as messageDialog,
+} from "antd";
+import TextArea, { TextAreaRef } from "antd/lib/input/TextArea";
 import Layout from "./Layout";
+import styles from "./Add.module.css";
+import { useRef } from "react";
 
 interface AddProps {
   loading: boolean;
@@ -10,6 +18,11 @@ interface AddProps {
 }
 
 const Add: React.FC<AddProps> = ({ loading, back, logout }) => {
+  const titleRef = useRef<InputRef>(null);
+  const messageRef = useRef<TextAreaRef>(null);
+  const authorRef = useRef<InputRef>(null);
+  const urlRef = useRef<InputRef>(null);
+
   return (
     <Layout>
       <PageHeader
@@ -21,49 +34,85 @@ const Add: React.FC<AddProps> = ({ loading, back, logout }) => {
         }
         subTitle="Add Your Book"
         extra={[
-          <Button key="1" type="primary" onClick={logout}>
+          <Button
+            key="1"
+            type="primary"
+            onClick={logout}
+            className={styles.button_logout}
+          >
             Logout
           </Button>,
         ]}
       />
-      <div>
-        <div>
+      <div className={styles.add}>
+        <div className={styles.input_title}>
           Title
-          <span> *</span>
+          <span className={styles.required}> *</span>
         </div>
-        <div>
-          <Input placeholder="Title" />
+        <div className={styles.input_area}>
+          <Input placeholder="Title" className={styles.input} ref={titleRef} />
         </div>
-        <div>
+        <div className={styles.input_comment}>
           Comment
-          <span> *</span>
+          <span className={styles.required}> *</span>
         </div>
-        <div>
-          <TextArea rows={4} placeholder="Comment" />
+        <div className={styles.input_area}>
+          <TextArea
+            rows={4}
+            placeholder="Comment"
+            className={styles.input}
+            ref={messageRef}
+          />
         </div>
-        <div>
+        <div className={styles.input_author}>
           Author
-          <span> *</span>
+          <span className={styles.required}> *</span>
         </div>
-        <div>
-          <Input placeholder="Author" />
+        <div className={styles.input_area}>
+          <Input
+            placeholder="Author"
+            className={styles.input}
+            ref={authorRef}
+          />
         </div>
-        <div>
+        <div className={styles.input_url}>
           URL
-          <span> *</span>
+          <span className={styles.required}> *</span>
         </div>
-        <div>
-          <Input placeholder="URL" />
+        <div className={styles.input_area}>
+          <Input placeholder="URL" className={styles.input} ref={urlRef} />
         </div>
-        <div>
-          <Button size="large" loading={loading} onClick={click}>
+        <div className={styles.button_area}>
+          <Button
+            size="large"
+            loading={loading}
+            onClick={click}
+            className={styles.button}
+          >
             Add
           </Button>
         </div>
       </div>
     </Layout>
   );
-  function click() {}
+  function click() {
+    const title = titleRef.current!.input!.value;
+    const message = messageRef.current!.resizableTextArea?.props.value;
+    const author = authorRef.current!.input!.value;
+    const url = urlRef.current!.input!.value;
+
+    if (!title || !message || !author || !url) {
+      messageDialog.error("Please fill out all inputs");
+      return;
+    }
+
+    // Add({
+    //   title,
+    //   message,
+    //   author,
+    //   url,
+    // });
+  }
 };
 
 export default Add;
