@@ -10,14 +10,16 @@ import TextArea, { TextAreaRef } from "antd/lib/input/TextArea";
 import Layout from "./Layout";
 import styles from "./Add.module.css";
 import { useRef } from "react";
+import { BookReqType } from "../types";
 
 interface AddProps {
   loading: boolean;
   back: () => void;
   logout: () => void;
+  add: (book: BookReqType) => void;
 }
 
-const Add: React.FC<AddProps> = ({ loading, back, logout }) => {
+const Add: React.FC<AddProps> = ({ loading, back, logout, add }) => {
   const titleRef = useRef<InputRef>(null);
   const messageRef = useRef<TextAreaRef>(null);
   const authorRef = useRef<InputRef>(null);
@@ -97,7 +99,8 @@ const Add: React.FC<AddProps> = ({ loading, back, logout }) => {
   );
   function click() {
     const title = titleRef.current!.input!.value;
-    const message = messageRef.current!.resizableTextArea?.props.value;
+    const message = messageRef.current!.resizableTextArea?.props
+      .value as string;
     const author = authorRef.current!.input!.value;
     const url = urlRef.current!.input!.value;
 
@@ -106,12 +109,12 @@ const Add: React.FC<AddProps> = ({ loading, back, logout }) => {
       return;
     }
 
-    // Add({
-    //   title,
-    //   message,
-    //   author,
-    //   url,
-    // });
+    add({
+      title,
+      message,
+      author,
+      url,
+    });
   }
 };
 
